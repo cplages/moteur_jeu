@@ -101,6 +101,8 @@ export class SpriteComponent extends Component<ISpriteComponentDesc> implements 
     this.updateComponents(this.descr);
   }
 
+ // méthode "display" commentée car le layer prend en charge le display des components.
+
   // ## Méthode *display*
   // La méthode *display* choisit le shader et la texture appropriée
   // via la méthode *bind* de la feuille de sprite, sélectionne le

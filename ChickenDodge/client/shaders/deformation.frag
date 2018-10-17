@@ -19,17 +19,21 @@ uniform float uScale;
 varying vec2 vTextureCoord;
 
 void main(void) {
-  //  gl_FragColor = texture2D(uSampler, vTextureCoord);
-  //  gl_FragColor.gb *= 0.5;
 
+    //calcul de l'intensité de la deformation selon le temps
     vec4 intensite = texture2D(uIntensity, vec2(uTime, 0.5));
+    //mise à l'échelle
     intensite *= uScale;
 
+    //recherche du vecteur de déformation décalé selon un sinus (temps)
     vec4 deformation = texture2D(uDeformation, vTextureCoord + sin(uTime)); 
-
+    //centrage de la deformation
+    deformation -= 0.5;
+    //modulation par l'intensité
     deformation *= intensite;
 
-    vec2 colorCoord = vec2(vTextureCoord.x + deformation.x, vTextureCoord.y + deformation.y);
+    //application de la deformation
+    vec2 colorCoord = vec2(vTextureCoord.x + deformation.x , vTextureCoord.y + deformation.y );
     vec4 color = texture2D(uSampler, colorCoord);
 
     gl_FragColor = color;   
