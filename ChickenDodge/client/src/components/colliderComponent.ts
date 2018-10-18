@@ -2,6 +2,9 @@ import { Component, IComponent } from './component';
 import { PositionComponent } from './positionComponent';
 import { ILogicComponent } from '../logicSystem';
 import { Rectangle } from './rectangle';
+import { canvas } from '../graphicsAPI';
+import { ChickenComponent } from './chickenComponent';
+
 
 export interface ICollisionComponent extends IComponent {
   onCollision(other: ColliderComponent): void;
@@ -73,9 +76,23 @@ export class ColliderComponent extends Component<IColliderComponentDesc> impleme
         !c.owner.active) {
         return;
       }
+
+
+     // Vérification si collision possible par opération : flag & mask
+      let collisionCheck = this.flag & c.mask;
+      if (collisionCheck == 0){
+        return;
+      }
+
+      // Vérification par sudbdivision spatiale (quad tree)
+      if (! this.quadTreeCheck(4, c)){
+        return;
+      }
+      
       if (area.intersectsWith(c.area)) {
         this.handler!.onCollision(c);
       }
+
     });
   }
 
@@ -92,4 +109,79 @@ export class ColliderComponent extends Component<IColliderComponentDesc> impleme
       height: this.size.h,
     });
   }
+
+  // ## Méthode *Quad tree*
+  // Subdivision spatiale de l'écran en quad tree 
+  // afin de vérifier si deux composants se trouvent dans la même zone ou non
+  quadTreeCheck(n : number, c : ColliderComponent) : boolean {
+    let currentRectangle = new Rectangle ({
+      x: canvas.width/2,
+      y: canvas.height/2,
+      width: canvas.width,
+      height: canvas.height,
+    });
+
+    let inSameZone = false;
+
+    for (let k = 0; k<n; k++){
+      
+      inSameZone = false;
+      let childrenRectangle: Rectangle[] = this.addChildrenToQuadTree(currentRectangle);
+
+      const cPos = c.owner.getComponent<PositionComponent>('Position').worldPosition;
+      const thisPos = this.owner.getComponent<PositionComponent>('Position').worldPosition;
+        
+      let i = 0;
+      while(i < childrenRectangle.length && !inSameZone){
+        if (childrenRectangle[i].contains(cPos) && childrenRectangle[i].contains(thisPos)){
+          inSameZone = true;
+          currentRectangle = childrenRectangle[i];
+        }
+        i++;
+      }
+    }
+    return inSameZone;
+  }
+
+  // Calcul des 4 sous rectangles
+  addChildrenToQuadTree(r : Rectangle) : Rectangle[] {
+
+    let childrenRectangle: Rectangle[] = [];
+
+    // 1er fils en haut à gauche
+    childrenRectangle.push(new Rectangle ({
+      x: r.xMin + (r.xMax - r.xMin) / 4,
+      y: r.yMin + (r.yMax - r.yMin) / 4,
+      width: (r.xMax - r.xMin) / 2,
+      height: (r.yMax - r.yMin) / 2,
+    }));
+
+    // 2eme fils en haut à droite
+    childrenRectangle.push(new Rectangle ({
+      x: r.xMin + (r.xMax - r.xMin) * (3/4),
+      y: r.yMin + (r.yMax - r.yMin) / 4,
+      width: (r.xMax - r.xMin) / 2,
+      height: (r.yMax - r.yMin) / 2,
+    }));
+
+    // 3eme fils en bas à gauche
+    childrenRectangle.push(new Rectangle ({
+      x: r.xMin + (r.xMax - r.xMin) / 4,
+      y: r.yMin + (r.yMax - r.yMin) * (3/4),
+      width: (r.xMax - r.xMin) / 2,
+      height: (r.yMax - r.yMin) / 2,
+    }));
+
+    // 4eme fils en bas à droite
+    childrenRectangle.push(new Rectangle ({
+      x: r.xMin + (r.xMax - r.xMin)  * (3/4),
+      y: r.yMin + (r.yMax - r.yMin)  * (3/4),
+      width: (r.xMax - r.xMin) / 2,
+      height: (r.yMax - r.yMin) / 2,
+    }));
+
+    return childrenRectangle; 
+  }
+
+
 }

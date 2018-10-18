@@ -1,3 +1,5 @@
+import { vec3 } from 'gl-matrix';
+
 // ## Classe *Rectangle*
 // Classe pour représenter un rectangle.
 interface IRectangleDesc {
@@ -48,4 +50,12 @@ export class Rectangle {
       (this.yMax <= other.yMin)
     );
   }
+
+  
+  contains(pos : vec3) : boolean {
+    if ( (pos[0] <= this.xMax && pos[0] >= this.xMin) && (pos[1] <= this.yMax && pos[1] >= this.yMin)) {
+    return true;
+    }
+  return false;
+  } 
 }
