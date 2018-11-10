@@ -1,0 +1,20 @@
+{
+  "FULL_SCREEN": "Full screen",
+  "DRAW_CALLS": "Draw calls",
+  "CHAR_KEYS": "WASD/ZQSD",
+  "ARROW_KEYS": "Arrows",
+  "SPACE_KEY": "Space",
+  "ENTER_KEY": "Enter",
+  "MOVE": "Move",
+  "ATTACK": "Attack",
+  "ALIAS": "Alias",
+  "PLAY": "Play",
+  "EMPTY_ALIAS": "Player #{ID}'s name cannot be empty",
+
+  "countdown_1": "sprites/countdown_step1_en.png",
+  "countdown_2": "sprites/countdown_step2_en.png",
+  "countdown_3": "sprites/countdown_step3_en.png",
+  "greenPlayer": "Green Player",
+  "redPlayer": "Red Player",
+  "winMessage": "Congratulations, {WINNER}! You defeated {LOSER}!"
+}
