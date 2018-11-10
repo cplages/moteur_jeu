@@ -89,6 +89,7 @@ export class ColliderComponent extends Component<IColliderComponentDesc> impleme
         return;
       }
       
+      // Vérification par rectangles englobants.
       if (area.intersectsWith(c.area)) {
         this.handler!.onCollision(c);
       }
@@ -114,6 +115,7 @@ export class ColliderComponent extends Component<IColliderComponentDesc> impleme
   // Subdivision spatiale de l'écran en quad tree 
   // afin de vérifier si deux composants se trouvent dans la même zone ou non
   quadTreeCheck(n : number, c : ColliderComponent) : boolean {
+    //canvas du jeu
     let currentRectangle = new Rectangle ({
       x: canvas.width/2,
       y: canvas.height/2,
@@ -122,16 +124,19 @@ export class ColliderComponent extends Component<IColliderComponentDesc> impleme
     });
 
     let inSameZone = false;
-
+    //pour chaque subdivision
     for (let k = 0; k<n; k++){
       
       inSameZone = false;
+      //on redivise en 4
       let childrenRectangle: Rectangle[] = this.addChildrenToQuadTree(currentRectangle);
 
+      //on recupère les positions des deux colliders.
       const cPos = c.owner.getComponent<PositionComponent>('Position').worldPosition;
       const thisPos = this.owner.getComponent<PositionComponent>('Position').worldPosition;
         
       let i = 0;
+      //on vérifie s'ils sont dans la même zone. Si oui, on arrête la recherche est on passe au niveau de subdivision suivant.
       while(i < childrenRectangle.length && !inSameZone){
         if (childrenRectangle[i].contains(cPos) && childrenRectangle[i].contains(thisPos)){
           inSameZone = true;
