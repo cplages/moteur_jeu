@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Chicken Dodge</title>
+  <link rel="stylesheet" type="text/css" href="css/chickendodge.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
+  <script src="https://cdn.rawgit.com/evanw/node-source-map-support/v0.5.0/browser-source-map-support.js"></script>
+  <script>
+    require.config({
+      paths: {
+        'gl-matrix': 'https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.4.0/gl-matrix'
+      }
+    });
+    require(['browser-source-map-support'], (sourceMapSupport) => {
+      sourceMapSupport.install();
+    });
+  </script>
+  <script src="dist/merged.js"></script>
+</head>
+
+<body id="body" style="display:none">
+  <p>
+    <a href="?locale=fr">Français</a>
+    <a href="?locale=en">Anglais</a>
+  </p>
+  <p>
+    <button class="localized" onclick="requestFullScreen();">FULL_SCREEN</button>
+    <div>
+      <span class="localized">DRAW_CALLS</span>:
+      <span id="drawCalls"></span>
+    </div>
+  </p>
+  <div id="playarea">
+    <div id="instructions">
+      <div>
+        <p>
+          <span class="localized">greenPlayer</span>
+        </p>
+        <div>
+          <span class="localized">CHAR_KEYS</span> -
+          <span class="localized">MOVE</span>
+        </div>
+        <div>
+          <span class="localized">SPACE_KEY</span> -
+          <span class="localized">ATTACK</span>
+        </div>
+      </div>
+      <div>
+        <p>
+          <span class="localized">redPlayer</span>
+        </p>
+        <div>
+          <span class="localized">ARROW_KEYS</span> -
+          <span class="localized">MOVE</span>
+        </div>
+        <div>
+          <span class="localized">ENTER_KEY</span> -
+          <span class="localized">ATTACK</span>
+        </div>
+      </div>
+    </div>
+    <div id="config">
+      <p>
+        <span class="localized">ALIAS</span>(
+        <span class="localized">greenPlayer</span>):
+        <input id="player1_alias" value="Anonyme1" />
+      </p>
+      <p>
+        <span class="localized">ALIAS</span>(
+        <span class="localized">redPlayer</span>):
+        <input id="player2_alias" value="Anonyme2" />
+      </p>
+      <p>
+        <button class="localized" onclick="start();">PLAY</button>
+      </p>
+    </div>
+    <canvas id="canvas" width="768" height="576" style="display:none"></canvas>
+  </div>
+
+  <script>
+    let requestFullScreen;
+    let start;
+
+    require(["chickendodge", "graphicsAPI"], (game, GraphicsAPI) => {
+      requestFullScreen = GraphicsAPI.requestFullScreen;
+      start = game.start;
+      game.init();
+    });
+  </script>
+
+</body>
+
+</html>
