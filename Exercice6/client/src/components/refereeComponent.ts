@@ -1,4 +1,5 @@
 import { Component } from './component';
+import {AudioComponent} from './audioComponent';
 import { PlayerComponent } from './playerComponent';
 import { EventTrigger } from '../eventTrigger';
 import { Localisation } from '../localisation';
@@ -60,6 +61,7 @@ export class RefereeComponent extends Component<IRefereeComponentDesc> {
     });
 
     if (gameOver) {
+      AudioComponent.play('end');
       this.winEvent.trigger(bestPlayer!, worstPlayer!);
     }
   }

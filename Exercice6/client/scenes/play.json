@@ -216,7 +216,7 @@
               "components": {
                 "Chicken": {
                   "attack": 0.5,
-                  "heartAttackChance": 0.2,
+                  "heartAttackChance": 1,
                   "heartTemplate": {
                     "components": {
                       "Heart": {

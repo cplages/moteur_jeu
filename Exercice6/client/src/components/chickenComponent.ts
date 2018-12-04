@@ -5,7 +5,9 @@ import { SpriteComponent } from './spriteComponent';
 import { ColliderComponent } from './colliderComponent';
 import { Scene, IEntityDesc } from '../scene';
 import { ILogicComponent } from '../logicSystem';
+import { Timing } from '../timing';
 import { vec3 } from 'gl-matrix';
+
 
 let dropId = 0;
 
@@ -28,7 +30,7 @@ export class ChickenComponent extends Component<IChickenComponentDesc> implement
   private heartTemplate!: IEntityDesc;
   private rupeeTemplate!: IEntityDesc;
   private velocity!: vec3;
-
+  private soundTime = -1;
   // ## Méthode *create*
   // Cette méthode est appelée pour configurer le composant avant
   // que tous les composants d'un objet aient été créés.
@@ -59,14 +61,12 @@ export class ChickenComponent extends Component<IChickenComponentDesc> implement
   // a atteint sa cible, il laisse tomber un rubis. Le poulet est
   // automatiquement détruit si il a parcouru une distance trop
   // grande (il sera déjà en dehors de l'écran).
-  update() {
+  update(timing: Timing) {
     const position = this.owner.getComponent<PositionComponent>('Position');
     const targetDistanceSq = vec3.squaredDistance(this.target, position.local);
     position.translate(this.velocity);
     const newTargetDistanceSq = vec3.squaredDistance(this.target, position.local);
     if ((!this.dropped) && (newTargetDistanceSq > targetDistanceSq)) {
-      // # Joue le son
-      AudioComponent.play('rupee_drop');
       this.drop(this.rupeeTemplate, dropId++);
     }
 
@@ -74,6 +74,13 @@ export class ChickenComponent extends Component<IChickenComponentDesc> implement
     if (this.distance > 500) {
       this.owner.parent!.removeChild(this.owner);
     }
+
+    if(timing.now.getTime() >= this.soundTime) {
+      AudioComponent.play('chicken_idle');
+      this.soundTime = timing.now.getTime()  + (Math.random() * 3 + 2) * 1000;
+    }
+
+
   }
 
   // ## Méthode *drop*
@@ -84,6 +91,14 @@ export class ChickenComponent extends Component<IChickenComponentDesc> implement
 
     template.components!.Position = position.local;
     template.components!.Sprite.spriteSheet = this.owner.getComponent<SpriteComponent>('Sprite').spriteSheet;
+
+    if(template == this.heartTemplate ) {
+      AudioComponent.play('heart_drop');
+    }
+    else if(template == this.rupeeTemplate) {
+      // # Joue le son
+      AudioComponent.play('rupee_drop');
+    }
 
     return Scene.current.createChild(template, id.toString(), this.owner.parent!)
       .then((newObj) => {
