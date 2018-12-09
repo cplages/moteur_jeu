@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "start": "node_modules/.bin/ts-node src/server.ts"
+  },
+  "dependencies": {
+    "@types/node": "^10.9.4",
+    "@types/ws": "^6.0.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.3",
+    "ws": "^6.0.0"
+  }
+}
