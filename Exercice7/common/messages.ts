@@ -204,6 +204,49 @@ export class NetworkInputChanged extends NetworkMessage {
   }
 }
 
+export interface IScoreDesc {
+  name: string;
+  score: number;
+}
+
+// # Classe *NetworkScore*
+// Ce message permet de transférer le score d'un joueur.
+export class NetworkScore extends NetworkMessage {
+  // ## Constante *typeCode*
+  // Représente l'identifiant numérique de ce message
+  static typeCode = 3;
+
+  name!: string;
+  score!: number;
+
+  // ## Méthode *build*
+  // Initialise les valeurs lors de la création d'une nouvelle
+  // instance de ce message.
+  build(msg: IScoreDesc) {
+    this.typeCode = NetworkScore.typeCode;
+    this.name = msg.name;
+    this.score = msg.score;
+  }
+
+  // ## Méthode *serialize*
+  // Cette méthode permet d'enregistrer le contenu du message
+  // dans un format pouvant être transféré.
+  serialize(serializer: ISerializer) {
+    super.serialize(serializer);
+    serializer.writeString(this.name);
+    serializer.writeU32(this.score);
+  }
+
+  // ## Méthode *deserialize*
+  // Cette méthode permet de reconstituer le contenu du message
+  // à partir des données reçues.
+  deserialize(deserializer: IDeserializer) {
+    super.deserialize(deserializer);
+    this.name = deserializer.readString();
+    this.score = deserializer.readU32();
+  }
+}
+
 
 // # Enregistrement des types de message
 // Ces instructions sont exécutées lors du chargement de ce
@@ -212,3 +255,4 @@ export class NetworkInputChanged extends NetworkMessage {
 NetworkMessage.register(NetworkLogin);
 NetworkMessage.register(NetworkStart);
 NetworkMessage.register(NetworkInputChanged);
+NetworkMessage.register(NetworkScore);
