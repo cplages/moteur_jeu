@@ -203,7 +203,7 @@ export class PlayerComponent extends Component<IPlayerComponentDesc> implements 
   private updateStandard() {
     if (!this.isAttacking && this.input.getKey('attack')) {
       // # Joue le son
-      AudioComponent.play('attack');
+      //AudioComponent.play('attack');
       this.isAttacking = true;
       this.sprite.animationFrame = 1;
       this.sprite.frameSkip = 1;
@@ -277,7 +277,7 @@ export class PlayerComponent extends Component<IPlayerComponentDesc> implements 
       if (this.isAttacking) {
         chicken.onAttack();
         // # Joue le son
-      AudioComponent.play('chicken_hit');
+        AudioComponent.play('chicken_hit');
       } else {
         this.life.value -= chicken.attack;
       }
